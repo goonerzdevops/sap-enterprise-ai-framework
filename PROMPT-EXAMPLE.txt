@@ -1,58 +1,64 @@
 ================================================================================
-MAGIC ONE-LINER PROMPTS (ULTRA-RINGKAS: 1 KALIMAT BOOM!)
-Standar Operasional: AGENTS.md, KNOWLEDGE_BASE_ARCHITECTURE.md & .agents/
+CONTOH PROMPT ALAMI & PRAKTIS (NATURAL DEVELOPER PROMPTS)
+Cukup Bicara Normal — Biarkan AGENTS.md yang Memilih Skill & Menjalankan SOP!
 ================================================================================
 
-Karena seluruh aturan ketat, guardrails Clean Core, pembersihan versi (pruning),
-audit ekstensi biner, segregasi format, dan script Python SUDAH TERBAKAR MATANG
-di dalam AGENTS.md dan .agents/skills/, Anda TIDAK PERLU lagi mengetik prompt
-panjang lebar!
+Sebagai developer/user, Anda TIDAK PERLU mengingat nama-nama skill, script Python,
+atau perkakas internal (seperti docx-inspector, excel-query, synthesizer, builder).
+Semua pemetaan skill sudah otomatis diatur di dalam AGENTS.md.
 
-Cukup ketik 1 KALIMAT di bawah ini, dan AI Agent akan otomatis mengeksekusi
-seluruh SOP secara mandiri:
+Gunakan kalimat perintah alami sehari-hari seperti di bawah ini:
 
 --------------------------------------------------------------------------------
-1. MAGIC PROMPT: ONBOARDING RAW DUMP BARU (TRIAGE, CLEANUP, & ASSET EXTRACT)
+1. MERAPIKAN & ONBOARD FOLDER MENTAH KLIEN (RAW DUMP)
 --------------------------------------------------------------------------------
-Gunakan ini saat baru dapat folder mentah (campuran docx, xlsx, pdf, MoM, email):
+Gunakan ini saat baru dapat folder kiriman klien yang berantakan:
 
-"Onboard folder mentah @[folder korpus] untuk klien [Nama Klien] sesuai protokol @[AGENTS.md] dan @[KNOWLEDGE_BASE_ARCHITECTURE.md]."
+"Onboard folder mentah @[folder korpus] untuk klien [Nama Klien] sesuai @[AGENTS.md]"
 
-✨ APA YANG OTOMATIS BERJALAN DI BELAKANG LAYAR (OTOMATIS 100%):
-- AI membuka sandbox staging terisolasi (tidak menyentuh master).
-- Otomatis menjalankan validate_extensions.py untuk membetulkan file salah ekstensi.
-- Otomatis menjalankan prune_versions.py --keep 2 (hanya simpan 2 versi terakhir, sisanya dibuang).
-- Otomatis membuat 6 subfolder format fisik (Docx_Specs, Excel_Trackers, ABAP, dll).
-- Otomatis membuat Companion Digest (*_digest.md) dan mengekstrak gambar diagram.
-- Otomatis menyusun CLIENT_CONTEXT.md.
-- Menyajikan checklist konfirmasi YES/NO kepada Anda sebelum migrasi ke master.
+Atau lebih santai:
+
+"Tolong rapikan dan onboard file-file mentah di @[folder korpus] untuk klien [Nama Klien]"
+
+(AI otomatis: membersihkan file sampah, memangkas versi lama, segregasi folder,
+ekstrak diagram gambar, membuat digest ringkas, dan meminta approval Anda).
 
 
 --------------------------------------------------------------------------------
-2. MAGIC PROMPT: END-TO-END RAKIT FSD DARI RAW DUMP (SINTESIS KE WORD .DOCX)
+2. MEMBUAT DOKUMEN FSD RESMI DARI DATA PROYEK
 --------------------------------------------------------------------------------
-Gunakan ini saat ingin langsung mengubah bahan mentah menjadi dokumen FSD Word resmi:
+Gunakan ini saat ingin merakit dokumen spesifikasi Word (.docx & .md):
 
-"Sintesis dan build FSD untuk RICEF [ID_RICEF, misal: REQ-001] dari data @[path/ke/folder_klien] sesuai alur 5 fase di @[AGENTS.md]."
+"Buatkan FSD lengkap untuk RICEF [ID_RICEF, misal: REQ-001] dari data @[folder klien] sesuai @[AGENTS.md]"
 
-✨ APA YANG OTOMATIS BERJALAN DI BELAKANG LAYAR (OTOMATIS 100%):
-- AI menjalankan 4 algoritma forensik sap-fsd-synthesizer untuk membedah data mentah.
-- Menghasilkan intermediate AST content_<req>.py dan manifest <req>_provenance.md.
-- Menjalankan build_fsd.py untuk mengkloning template Word resmi (.docx) & Markdown (.md).
-- Menghasilkan Mandatory Companion Triad (.docx, .md, _provenance.md, _digest.md).
+(AI otomatis: menganalisa seluruh dokumen pendukung, melacak silsilah data,
+dan mengompilasi template Word resmi korporat beserta companion markdown).
 
 
 --------------------------------------------------------------------------------
-3. MAGIC PROMPT: INSPEKSI SPESIFIK HEMAT TOKEN (ZERO-TOKEN QUERY)
+3. BERTANYA / QUERY ISI DOKUMEN (WORD & EXCEL) TANPA BOROS TOKEN
 --------------------------------------------------------------------------------
-Untuk membaca isi bab Word atau baris Excel tanpa memboroskan token context window:
+Gunakan ini saat ingin melihat potongan data tanpa membaca seluruh file besar:
 
-- Ambil Bab Word:
-  "Tolong ambil bab [Nama Bab, misal: Diagram Alur] dari dokumen @[path/ke/file.docx] menggunakan docx-inspector."
+- Ambil Bab / Diagram Tertentu di Word:
+  "Tolong ambil bab [Diagram Alur / Latar Belakang] dari dokumen @[file.docx]"
 
-- Filter Data Excel:
-  "Tolong filter baris [Kolom=Nilai, misal: Modul=MM] pada sheet [Nama Sheet] dari file @[path/ke/file.xlsx] menggunakan excel-inspector."
+- Filter Baris Data di Excel:
+  "Tolong carikan data [Modul=MM] pada sheet [RICEF Tracker] di file @[file.xlsx]"
 
-- Cek Dump / Runtime Error SAP:
-  "Analisis dump ST22 ini sesuai panduan Clean Core di @[AGENTS.md]."
+- Lihat Daftar Sheet Excel:
+  "Tampilkan daftar sheet dan ringkasan kolom dari file @[file.xlsx]"
+
+
+--------------------------------------------------------------------------------
+4. CODING ABAP & TROUBLESHOOTING SAP
+--------------------------------------------------------------------------------
+- Analisis Error / Dump ST22:
+  "Tolong analisa error / dump ST22 ini dan berikan solusinya sesuai standar Clean Core"
+
+- Bikin Laporan ALV Lengkap + Dummy Data:
+  "Buatkan report ALV dan program seeder data untuk kebutuhan [sebutkan kebutuhan]"
+
+- Bikin Aplikasi Fiori Web RAP dari Tabel Z:
+  "Tolong buatkan aplikasi Fiori RAP modern berbasis tabel @[ZTBL_NAMA]"
 ================================================================================
