@@ -16,11 +16,7 @@ seluruh SOP secara mandiri:
 --------------------------------------------------------------------------------
 Gunakan ini saat baru dapat folder mentah (campuran docx, xlsx, pdf, MoM, email):
 
-"Tolong onboard folder mentah @[path/ke/folder_mentah] untuk klien [Nama Klien] sesuai protokol @[AGENTS.md]."
-
-Atau variasi eksplisit skill:
-
-"Onboard dan bersihkan korpus mentah @[path/ke/folder_mentah] menggunakan skill @[.agents/skills/knowledge-project-onboarding]."
+"Onboard folder mentah @[folder korpus] untuk klien [Nama Klien] sesuai protokol @[AGENTS.md] dan @[KNOWLEDGE_BASE_ARCHITECTURE.md]."
 
 ✨ APA YANG OTOMATIS BERJALAN DI BELAKANG LAYAR (OTOMATIS 100%):
 - AI membuka sandbox staging terisolasi (tidak menyentuh master).
