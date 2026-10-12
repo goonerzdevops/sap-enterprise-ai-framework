@@ -1,0 +1,110 @@
+================================================================================
+KNOWLEDGE PROJECT ONBOARDING: PROMPT ENGINEERING CHEATSHEET & TEMPLATES
+Standar Operasional: KNOWLEDGE_BASE_ARCHITECTURE.md & knowledge-project-onboarding
+================================================================================
+
+Dokumen ini berisi kurasi template prompt rekayasa (*Prompt Engineering*) untuk
+memerintahkan AI Agent (Antigravity IDE, Cline, Roo Code, Claude Code) memproses,
+membersihkan, dan meng-onboard kumpulan dokumen mentah klien (raw dump heterogen)
+ke dalam sistem Second Brain SAP tanpa merusak arsitektur master.
+
+Tersedia 3 variasi prompt sesuai kebutuhan:
+1. TEMPLATE 1: Enterprise Production Prompt (Ketat, Lengkap & Zero-Risk)
+2. TEMPLATE 2: Concise Developer Prompt (Ringkas, Cepat & Praktis)
+3. TEMPLATE 3: End-to-End Triage to FSD Readiness (Langsung Siap Sintesis FSD)
+
+--------------------------------------------------------------------------------
+TEMPLATE 1: ENTERPRISE PRODUCTION PROMPT (DIREKOMENDASIKAN UNTUK KORPUS BESAR)
+--------------------------------------------------------------------------------
+Gunakan prompt ini saat menerima folder dump mentah dari klien yang berisi puluhan
+hingga ratusan file campuran (.docx, .xlsx, .pptx, .pdf, MoM meeting, email).
+
+--- SALIN DI BAWAH INI ---
+Bertindaklah sebagai Senior SAP Knowledge Architect & Enterprise Data Engineer.
+
+Saya baru saja menerima korpus dokumen mentah baru dari klien di folder:
+`[ISI_PATH_FOLDER_MENTAH_DISINI, contoh: c:\D\FIleSharing\SAP\staging_client_pertamina]`
+
+Lakukan proses Triage, Sanitasi, dan Onboarding secara ketat sesuai direktif arsitektur di:
+- [[KNOWLEDGE_BASE_ARCHITECTURE.md]] (Section 3: Raw Corpus Triage & Onboarding Protocol)
+- [[.agents/skills/knowledge-project-onboarding/SKILL.md]]
+
+Patuhi Mandatory Constraints berikut:
+1. SANDBOX STAGING ISOLATION: DILARANG KERAS memindahkan atau menyentuh folder master `40_Projects_and_Specs/` sebelum seluruh proses PoC di folder staging selesai dan disetujui.
+2. EXTENSION INTEGRITY CHECK: Jalankan script `validate_extensions.py --apply` pada folder mentah untuk mendeteksi dan memperbaiki salah ekstensi (magic bytes PK\x03\x04 & MIME XML schema) dalam 0 LLM tokens.
+3. GOLDEN RULE RETENSI VERSI (V_n & V_n-1): Jalankan `prune_versions.py --keep 2 --apply`. Hapus versi usang (< V_n-1) agar AI tidak terdisorientasi mengutip klausul lama yang sudah dibatalkan.
+4. PHYSICAL FORMAT SEGREGATION: Kelompokkan berkas fisik ke sub-folder standar:
+   - `Docx_Specs/`       : Spesifikasi Word formal (.docx).
+   - `Excel_Trackers/`   : Tracker konfigurasi, RICEF, scoping (.xlsx).
+   - `Markdown_Specs/`   : Dokumen spesifikasi native markdown.
+   - `ABAP_Source_Code/` : 100% MURNI kode ABAP (Class, Driver, Include, Test Runner).
+   - `Document_Tooling/` : Perkakas otomasi lokal (Python compiler, script generator).
+   - `Outputs_and_Logs/` : Transkrip rapat (MoM), email, log pengujian, hasil query.
+5. ZERO-TOKEN DIGEST & ASSET FILTER:
+   - Jalankan batch `docx_inspector.py` dan `excel_query.py` untuk membuat companion digest (`*_digest.md`).
+   - Ekstrak seluruh diagram teknis ke `<file>_assets/`. Filter derau visual (abaikan ikon, logo, paraf scan < 3.5 KB).
+6. CLIENT PROFILE: Susun berkas `CLIENT_CONTEXT.md` di root staging yang mencakup profil klien, target sistem SAP, modul terkait, dan inventaris berkas bersih.
+7. HUMAN-IN-THE-LOOP AUDIT GATE: Setelah selesai, sajikan tabel inventaris bersih dan checklist verifikasi YES/NO. Tunggu persetujuan eksplisit saya sebelum memindahkan folder ke master `40_Projects_and_Specs/Client_<NamaKlien>/`.
+
+Mulai eksekusi Tahap 1 (Recon & Triage) sekarang dan laporkan temuan awalnya.
+--- SELESAI ---
+
+
+--------------------------------------------------------------------------------
+TEMPLATE 2: CONCISE DEVELOPER PROMPT (RINGKAS & CEPAT UNTUK SEHARI-HARI)
+--------------------------------------------------------------------------------
+Gunakan prompt ini jika Anda ingin eksekusi cepat tanpa instruksi panjang, namun
+tetap mengikat AI pada skill dan guardrails yang baku.
+
+--- SALIN DI BAWAH INI ---
+Tolong onboard dan bersihkan folder korpus mentah di:
+`[ISI_PATH_FOLDER_MENTAH_DISINI]`
+
+Ikuti protokol [[.agents/skills/knowledge-project-onboarding/SKILL.md]] dan [[KNOWLEDGE_BASE_ARCHITECTURE.md]]:
+- Terapkan Sandbox Staging (jangan sentuh `40_Projects_and_Specs/` dulu).
+- Jalankan `validate_extensions.py --apply` dan `prune_versions.py --keep 2 --apply`.
+- Segregasi fisik ke: Docx_Specs, Excel_Trackers, Markdown_Specs, ABAP_Source_Code, Document_Tooling, Outputs_and_Logs.
+- Batch generate companion digest via docx-inspector dan excel-inspector (filter logo/paraf <3.5KB).
+- Buat `CLIENT_CONTEXT.md`.
+- Berikan tabel rekap hasil triage dan minta konfirmasi saya sebelum promosi ke master.
+--- SELESAI ---
+
+
+--------------------------------------------------------------------------------
+TEMPLATE 3: RAW DUMP TO FSD READINESS (SIAP UNTUK SINTESIS FSD)
+--------------------------------------------------------------------------------
+Gunakan prompt ini jika folder mentah tersebut ditujukan untuk langsung disintesis
+menjadi dokumen FSD resmi RICEF menggunakan pipeline dual-stage kita.
+
+--- SALIN DI BAWAH INI ---
+Kita baru menerima raw requirements dump untuk proyek klien `[NAMA_KLIEN]` di:
+`[ISI_PATH_FOLDER_MENTAH_DISINI]`
+
+Target akhir: Menyiapkan korpus ini agar siap diproses oleh [[.agents/skills/sap-fsd-synthesizer/SKILL.md]] dan [[.agents/skills/sap-fsd-builder/SKILL.md]] untuk RICEF ID `[CONTOH: REQ-001 / F-MM-01]`.
+
+Langkah kerja wajib:
+1. Jalankan Fase 1 & 2 dari [[AGENTS.md]] (knowledge-project-onboarding, docx-inspector, excel-inspector).
+2. Lakukan audit integritas ekstensi dan pangkas versi revisi lama (hanya simpan 2 versi terakhir).
+3. Segregasikan dokumen teknis vs log manajerial.
+4. Buat Companion Digest untuk seluruh file Excel tracker dan Word FSD pendukung.
+5. Ekstrak aset visual diagram alur bisnis ke vault aset lokal.
+6. Buat `CLIENT_CONTEXT.md` dengan menyertakan pemetaan RICEF ID, tabel SAP terkait, dan lead consultant.
+7. Tampilkan hasil triage dan mintakan konfirmasi audit gate sebelum kita jalankan script `synthesize_fsd.py`.
+--- SELESAI ---
+
+
+================================================================================
+ANATOMI VARIABEL YANG PERLU DIGANTI SEBELUM MENGIRIM PROMPT
+================================================================================
+1. `[ISI_PATH_FOLDER_MENTAH_DISINI]`
+   Ganti dengan path absolut atau relatif folder dump mentah.
+   Contoh: `c:\D\FIleSharing\SAP\raw_dump_pertamina_s4hana`
+   
+2. `[NAMA_KLIEN]`
+   Ganti dengan nama entitas klien atau inisiatif bisnis.
+   Contoh: `Pertamina Lubricants`, `Unilever Indonesia`, `Telkomsel`
+
+3. `[CONTOH: REQ-001 / F-MM-01]`
+   Ganti dengan nomor ID RICEF spesifik jika ingin langsung diarahkan ke FSD build.
+   Contoh: `REQ-001`, `F-SD-03`, `R-MM-01`
+================================================================================
