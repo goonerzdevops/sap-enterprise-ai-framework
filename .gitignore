@@ -1,0 +1,29 @@
+﻿# Byte-compiled / optimized files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Scratchpad & temporary files
+scratch/
+*.tmp
+*.temp
+
+# Client Projects & Sensitive Specs Isolation (Local only)
+40_Projects_and_Specs/Client_*/
+!40_Projects_and_Specs/_Template_Client/
+
+# Local credentials & secrets
+.env
+*.credentials
+*.key
+
+# OS & Editor generated files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

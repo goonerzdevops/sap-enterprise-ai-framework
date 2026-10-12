@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "sap-abap-adt": {
+      "command": "node",
+      "args": [
+        "C:\\D\\Software\\MCP\\mcp-abap-adt\\dist\\index.js"
+      ],
+      "env": {
+        "SAP_URL": "https://vecs4demo.eclectic.co.id:44300",
+        "SAP_CLIENT": "900",
+        "SAP_USERNAME": "E26070",
+        "SAP_PASSWORD": "Initial_456",
+        "NODE_TLS_REJECT_UNAUTHORIZED": "0"
+      }
+    }
+  }
+}
