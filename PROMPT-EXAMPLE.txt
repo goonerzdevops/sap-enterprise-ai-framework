@@ -1,110 +1,62 @@
 ================================================================================
-KNOWLEDGE PROJECT ONBOARDING: PROMPT ENGINEERING CHEATSHEET & TEMPLATES
-Standar Operasional: KNOWLEDGE_BASE_ARCHITECTURE.md & knowledge-project-onboarding
+MAGIC ONE-LINER PROMPTS (ULTRA-RINGKAS: 1 KALIMAT BOOM!)
+Standar Operasional: AGENTS.md, KNOWLEDGE_BASE_ARCHITECTURE.md & .agents/
 ================================================================================
 
-Dokumen ini berisi kurasi template prompt rekayasa (*Prompt Engineering*) untuk
-memerintahkan AI Agent (Antigravity IDE, Cline, Roo Code, Claude Code) memproses,
-membersihkan, dan meng-onboard kumpulan dokumen mentah klien (raw dump heterogen)
-ke dalam sistem Second Brain SAP tanpa merusak arsitektur master.
+Karena seluruh aturan ketat, guardrails Clean Core, pembersihan versi (pruning),
+audit ekstensi biner, segregasi format, dan script Python SUDAH TERBAKAR MATANG
+di dalam AGENTS.md dan .agents/skills/, Anda TIDAK PERLU lagi mengetik prompt
+panjang lebar!
 
-Tersedia 3 variasi prompt sesuai kebutuhan:
-1. TEMPLATE 1: Enterprise Production Prompt (Ketat, Lengkap & Zero-Risk)
-2. TEMPLATE 2: Concise Developer Prompt (Ringkas, Cepat & Praktis)
-3. TEMPLATE 3: End-to-End Triage to FSD Readiness (Langsung Siap Sintesis FSD)
+Cukup ketik 1 KALIMAT di bawah ini, dan AI Agent akan otomatis mengeksekusi
+seluruh SOP secara mandiri:
 
 --------------------------------------------------------------------------------
-TEMPLATE 1: ENTERPRISE PRODUCTION PROMPT (DIREKOMENDASIKAN UNTUK KORPUS BESAR)
+1. MAGIC PROMPT: ONBOARDING RAW DUMP BARU (TRIAGE, CLEANUP, & ASSET EXTRACT)
 --------------------------------------------------------------------------------
-Gunakan prompt ini saat menerima folder dump mentah dari klien yang berisi puluhan
-hingga ratusan file campuran (.docx, .xlsx, .pptx, .pdf, MoM meeting, email).
+Gunakan ini saat baru dapat folder mentah (campuran docx, xlsx, pdf, MoM, email):
 
---- SALIN DI BAWAH INI ---
-Bertindaklah sebagai Senior SAP Knowledge Architect & Enterprise Data Engineer.
+"Tolong onboard folder mentah @[path/ke/folder_mentah] untuk klien [Nama Klien] sesuai protokol @[AGENTS.md]."
 
-Saya baru saja menerima korpus dokumen mentah baru dari klien di folder:
-`[ISI_PATH_FOLDER_MENTAH_DISINI, contoh: c:\D\FIleSharing\SAP\staging_client_pertamina]`
+Atau variasi eksplisit skill:
 
-Lakukan proses Triage, Sanitasi, dan Onboarding secara ketat sesuai direktif arsitektur di:
-- [[KNOWLEDGE_BASE_ARCHITECTURE.md]] (Section 3: Raw Corpus Triage & Onboarding Protocol)
-- [[.agents/skills/knowledge-project-onboarding/SKILL.md]]
+"Onboard dan bersihkan korpus mentah @[path/ke/folder_mentah] menggunakan skill @[.agents/skills/knowledge-project-onboarding]."
 
-Patuhi Mandatory Constraints berikut:
-1. SANDBOX STAGING ISOLATION: DILARANG KERAS memindahkan atau menyentuh folder master `40_Projects_and_Specs/` sebelum seluruh proses PoC di folder staging selesai dan disetujui.
-2. EXTENSION INTEGRITY CHECK: Jalankan script `validate_extensions.py --apply` pada folder mentah untuk mendeteksi dan memperbaiki salah ekstensi (magic bytes PK\x03\x04 & MIME XML schema) dalam 0 LLM tokens.
-3. GOLDEN RULE RETENSI VERSI (V_n & V_n-1): Jalankan `prune_versions.py --keep 2 --apply`. Hapus versi usang (< V_n-1) agar AI tidak terdisorientasi mengutip klausul lama yang sudah dibatalkan.
-4. PHYSICAL FORMAT SEGREGATION: Kelompokkan berkas fisik ke sub-folder standar:
-   - `Docx_Specs/`       : Spesifikasi Word formal (.docx).
-   - `Excel_Trackers/`   : Tracker konfigurasi, RICEF, scoping (.xlsx).
-   - `Markdown_Specs/`   : Dokumen spesifikasi native markdown.
-   - `ABAP_Source_Code/` : 100% MURNI kode ABAP (Class, Driver, Include, Test Runner).
-   - `Document_Tooling/` : Perkakas otomasi lokal (Python compiler, script generator).
-   - `Outputs_and_Logs/` : Transkrip rapat (MoM), email, log pengujian, hasil query.
-5. ZERO-TOKEN DIGEST & ASSET FILTER:
-   - Jalankan batch `docx_inspector.py` dan `excel_query.py` untuk membuat companion digest (`*_digest.md`).
-   - Ekstrak seluruh diagram teknis ke `<file>_assets/`. Filter derau visual (abaikan ikon, logo, paraf scan < 3.5 KB).
-6. CLIENT PROFILE: Susun berkas `CLIENT_CONTEXT.md` di root staging yang mencakup profil klien, target sistem SAP, modul terkait, dan inventaris berkas bersih.
-7. HUMAN-IN-THE-LOOP AUDIT GATE: Setelah selesai, sajikan tabel inventaris bersih dan checklist verifikasi YES/NO. Tunggu persetujuan eksplisit saya sebelum memindahkan folder ke master `40_Projects_and_Specs/Client_<NamaKlien>/`.
-
-Mulai eksekusi Tahap 1 (Recon & Triage) sekarang dan laporkan temuan awalnya.
---- SELESAI ---
+✨ APA YANG OTOMATIS BERJALAN DI BELAKANG LAYAR (OTOMATIS 100%):
+- AI membuka sandbox staging terisolasi (tidak menyentuh master).
+- Otomatis menjalankan validate_extensions.py untuk membetulkan file salah ekstensi.
+- Otomatis menjalankan prune_versions.py --keep 2 (hanya simpan 2 versi terakhir, sisanya dibuang).
+- Otomatis membuat 6 subfolder format fisik (Docx_Specs, Excel_Trackers, ABAP, dll).
+- Otomatis membuat Companion Digest (*_digest.md) dan mengekstrak gambar diagram.
+- Otomatis menyusun CLIENT_CONTEXT.md.
+- Menyajikan checklist konfirmasi YES/NO kepada Anda sebelum migrasi ke master.
 
 
 --------------------------------------------------------------------------------
-TEMPLATE 2: CONCISE DEVELOPER PROMPT (RINGKAS & CEPAT UNTUK SEHARI-HARI)
+2. MAGIC PROMPT: END-TO-END RAKIT FSD DARI RAW DUMP (SINTESIS KE WORD .DOCX)
 --------------------------------------------------------------------------------
-Gunakan prompt ini jika Anda ingin eksekusi cepat tanpa instruksi panjang, namun
-tetap mengikat AI pada skill dan guardrails yang baku.
+Gunakan ini saat ingin langsung mengubah bahan mentah menjadi dokumen FSD Word resmi:
 
---- SALIN DI BAWAH INI ---
-Tolong onboard dan bersihkan folder korpus mentah di:
-`[ISI_PATH_FOLDER_MENTAH_DISINI]`
+"Sintesis dan build FSD untuk RICEF [ID_RICEF, misal: REQ-001] dari data @[path/ke/folder_klien] sesuai alur 5 fase di @[AGENTS.md]."
 
-Ikuti protokol [[.agents/skills/knowledge-project-onboarding/SKILL.md]] dan [[KNOWLEDGE_BASE_ARCHITECTURE.md]]:
-- Terapkan Sandbox Staging (jangan sentuh `40_Projects_and_Specs/` dulu).
-- Jalankan `validate_extensions.py --apply` dan `prune_versions.py --keep 2 --apply`.
-- Segregasi fisik ke: Docx_Specs, Excel_Trackers, Markdown_Specs, ABAP_Source_Code, Document_Tooling, Outputs_and_Logs.
-- Batch generate companion digest via docx-inspector dan excel-inspector (filter logo/paraf <3.5KB).
-- Buat `CLIENT_CONTEXT.md`.
-- Berikan tabel rekap hasil triage dan minta konfirmasi saya sebelum promosi ke master.
---- SELESAI ---
+✨ APA YANG OTOMATIS BERJALAN DI BELAKANG LAYAR (OTOMATIS 100%):
+- AI menjalankan 4 algoritma forensik sap-fsd-synthesizer untuk membedah data mentah.
+- Menghasilkan intermediate AST content_<req>.py dan manifest <req>_provenance.md.
+- Menjalankan build_fsd.py untuk mengkloning template Word resmi (.docx) & Markdown (.md).
+- Menghasilkan Mandatory Companion Triad (.docx, .md, _provenance.md, _digest.md).
 
 
 --------------------------------------------------------------------------------
-TEMPLATE 3: RAW DUMP TO FSD READINESS (SIAP UNTUK SINTESIS FSD)
+3. MAGIC PROMPT: INSPEKSI SPESIFIK HEMAT TOKEN (ZERO-TOKEN QUERY)
 --------------------------------------------------------------------------------
-Gunakan prompt ini jika folder mentah tersebut ditujukan untuk langsung disintesis
-menjadi dokumen FSD resmi RICEF menggunakan pipeline dual-stage kita.
+Untuk membaca isi bab Word atau baris Excel tanpa memboroskan token context window:
 
---- SALIN DI BAWAH INI ---
-Kita baru menerima raw requirements dump untuk proyek klien `[NAMA_KLIEN]` di:
-`[ISI_PATH_FOLDER_MENTAH_DISINI]`
+- Ambil Bab Word:
+  "Tolong ambil bab [Nama Bab, misal: Diagram Alur] dari dokumen @[path/ke/file.docx] menggunakan docx-inspector."
 
-Target akhir: Menyiapkan korpus ini agar siap diproses oleh [[.agents/skills/sap-fsd-synthesizer/SKILL.md]] dan [[.agents/skills/sap-fsd-builder/SKILL.md]] untuk RICEF ID `[CONTOH: REQ-001 / F-MM-01]`.
+- Filter Data Excel:
+  "Tolong filter baris [Kolom=Nilai, misal: Modul=MM] pada sheet [Nama Sheet] dari file @[path/ke/file.xlsx] menggunakan excel-inspector."
 
-Langkah kerja wajib:
-1. Jalankan Fase 1 & 2 dari [[AGENTS.md]] (knowledge-project-onboarding, docx-inspector, excel-inspector).
-2. Lakukan audit integritas ekstensi dan pangkas versi revisi lama (hanya simpan 2 versi terakhir).
-3. Segregasikan dokumen teknis vs log manajerial.
-4. Buat Companion Digest untuk seluruh file Excel tracker dan Word FSD pendukung.
-5. Ekstrak aset visual diagram alur bisnis ke vault aset lokal.
-6. Buat `CLIENT_CONTEXT.md` dengan menyertakan pemetaan RICEF ID, tabel SAP terkait, dan lead consultant.
-7. Tampilkan hasil triage dan mintakan konfirmasi audit gate sebelum kita jalankan script `synthesize_fsd.py`.
---- SELESAI ---
-
-
-================================================================================
-ANATOMI VARIABEL YANG PERLU DIGANTI SEBELUM MENGIRIM PROMPT
-================================================================================
-1. `[ISI_PATH_FOLDER_MENTAH_DISINI]`
-   Ganti dengan path absolut atau relatif folder dump mentah.
-   Contoh: `c:\D\FIleSharing\SAP\raw_dump_pertamina_s4hana`
-   
-2. `[NAMA_KLIEN]`
-   Ganti dengan nama entitas klien atau inisiatif bisnis.
-   Contoh: `Pertamina Lubricants`, `Unilever Indonesia`, `Telkomsel`
-
-3. `[CONTOH: REQ-001 / F-MM-01]`
-   Ganti dengan nomor ID RICEF spesifik jika ingin langsung diarahkan ke FSD build.
-   Contoh: `REQ-001`, `F-SD-03`, `R-MM-01`
+- Cek Dump / Runtime Error SAP:
+  "Analisis dump ST22 ini sesuai panduan Clean Core di @[AGENTS.md]."
 ================================================================================
