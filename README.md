@@ -36,7 +36,7 @@ Repositori ini dirancang khusus dengan arsitektur **Hybrid Human & Agentic AI**,
 │   └── 📁 FI_Financials/                   <-- General Ledger, House Bank T012/T012K
 │
 ├── 📁 20_Technical_Core/                   <-- Kamus Teknis ABAP, Kamus Data (DDIC), BAPI, & ADT MCP (Reusable)
-│   ├── 📁 ABAP_Foundations/                <-- Panduan Lengkap Part 01 s/d Part 06, sintaks modern 7.5+
+│   ├── 📁 ABAP_Foundations/                <-- Panduan Lengkap Modul 01 s/d 07, sintaks modern 7.5+
 │   ├── 📁 Dictionary_Tables/               <-- DDL tabel kustom (ZEMP_DWI) & requirement database
 │   ├── 📁 Interfaces_BAPI/                 <-- Signature & analisis Function Module (BAPI_USER_GET_DETAIL)
 │   ├── 📁 ADT_MCP_Integration/             <-- Panduan server ADT MCP, tools, & troubleshooting

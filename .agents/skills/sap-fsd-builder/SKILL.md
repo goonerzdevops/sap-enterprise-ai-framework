@@ -89,6 +89,20 @@ Modul konten mendefinisikan tiga variabel utama:
    * `('tbl', [headers], [[rows]], [widths_in_dxa])`
    * `('fig', img_id, 'Caption Gambar', 'Penjelasan detail')`
 
+### 📐 Standar Lebar Kolom Semantik Tabel (`widths_in_dxa`)
+Total lebar halaman printable standar adalah **9.921 dxa** (~17,5 cm). **Dilarang keras memakai preset sempit statis** (misal `800 dxa` / 1,4 cm) untuk kolom nama objek/window. Gunakan preset semantik:
+* **Tabel Window / Layout (`W_WIN`):** `[1500, 3450, 3450, 1400]` (kolom 1: 2,65 cm agar `COMPANY_ADRE` tidak terpotong). Gunakan header ringkas: `Window` (bukan `Window Name`).
+* **Tabel Komponen Teknis (`W_TECH`):** `[1800, 2600, 2800, 2600]` (kolom 1: 3,17 cm untuk komponen modul).
+* **Tabel Objek ABAP (`W_OBJ`):** `[2400, 1600, 1600, 4200]` (kolom 1: 4,23 cm agar nama program seperti `ZIDMM_F_001_PO_FORM` muat satu baris).
+* **Tabel ID / Matrix Uji / Keputusan (`W_ID`):** `[700, 3300, 3800, 2000]` (kolom 1: 1,23 cm cukup untuk angka 1–3 digit).
+
+### 📏 Injeksi Spasi Paragraf Vertikal pada Heading
+Compiler `build_fsd.py` secara otomatis menyuntikkan tag OOXML `<w:spacing>` pada elemen `<w:pPr>`:
+* **Heading 1 (H1):** `sp_before=240` (12 pt), `sp_after=120` (6 pt).
+* **Heading 2 (H2):** `sp_before=180` (9 pt), `sp_after=80` (4 pt).
+* **Heading 3 (H3):** `sp_before=140` (7 pt), `sp_after=60` (3 pt).
+*Menjamin tidak terjadi zero bottom margin (heading menempel rapat ke teks di bawahnya).*
+
 ---
 
 ## 📋 SOP bagi AI Agent Saat Diminta Membuat FSD Baru

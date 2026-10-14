@@ -23,6 +23,12 @@ META = {
     ],
 }
 
+# Lebar Kolom Semantik Terstandarisasi (Total halaman: 9921 dxa):
+W_WIN  = [1500, 3450, 3450, 1400]  # Tabel Window Form (Kolom 1: 2,65 cm)
+W_TECH = [1800, 2600, 2800, 2600]  # Tabel Komponen Teknis (Kolom 1: 3,17 cm)
+W_OBJ  = [2400, 1600, 1600, 4200]  # Tabel Objek ABAP (Kolom 1: 4,23 cm)
+W_ID   = [700, 3300, 3800, 2000]   # Tabel ID / Matrix Uji (Kolom 1: 1,23 cm)
+
 # Struktur Elemen Dokumen (AST)
 # Tag yang didukung:
 #   ('h1', 'Judul Bab H1')

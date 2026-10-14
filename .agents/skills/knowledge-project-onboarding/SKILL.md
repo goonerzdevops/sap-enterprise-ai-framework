@@ -226,9 +226,45 @@ Setelah izin deployment disetujui pengguna secara eksplisit:
 
 ---
 
+## 6. Protokol Triase & Perutean Berkas Mentah Lepas (Single Raw File Triage & Routing Protocol)
+
+Selain korpus proyek klien (bulk dump), sistem juga sering menerima **berkas mentah lepas dari internet** (misal: PDF tutorial dengan nama acak, rangkuman Markdown eksternal, atau file catatan teks).
+
+Untuk mencegah polusi direktori (*folder cluttering*) dan memastikan berkas masuk ke kamar yang tepat tanpa membuat terlalu banyak skill baru, gunakan alur **Pohon Keputusan Perutean Deterministik (*Deterministic Routing Decision Tree*)**:
+
+```mermaid
+flowchart TD
+    RAW["Berkas Mentah Masuk dari Internet<br>(Nama Acak / Format Belum Terstruktur)"] --> SCAN["1. Scan Cepat DNA & Metadata (0 Token)<br>(triage_file.py --file <path>)"]
+    SCAN --> D1{"Apakah Terikat Klien / Tiket RICEF Spesifik?"}
+    D1 -->|"YA"| C40["📁 40_Projects_and_Specs/Client_<Nama>/<br>• Spesifikasi FSD / TSD<br>• User Stories / Mockup Tiket"]
+    D1 -->|"TIDAK"| D2{"Apakah Template Boilerplate / SOP Error ST22?"}
+    D2 -->|"YA"| C30["📁 30_Playbooks_and_SOP/<br>• Code_Templates / Boilerplate<br>• Error_Resolutions / Dump Analysis"]
+    D2 -->|"TIDAK"| D3{"Apakah Sintaks ABAP, Database Table, IDE ADT, atau Arsitektur S/4HANA?"}
+    D3 -->|"YA"| C20["📁 20_Technical_Core/<br>• ABAP_Foundations (Koding, IDE, Delta S/4HANA)<br>• Dictionary_Tables (DDIC SE11)<br>• Interfaces_BAPI / ADT_MCP_Integration"]
+    D3 -->|"TIDAK"| D4{"Apakah Proses Bisnis Fungsional Murni (Tanpa Koding)?"}
+    D4 -->|"YA"| C10["📁 10_Domains/<br>• Overview (Peta Modul Makro)<br>• MM_Procurement / SD_OrderToCash / FI_Financials"]
+    D4 -->|"TIDAK (Sintaks Usang Pre-7.40)"| C90["📁 90_Legacy_Archive/<br>• Kode Kuno Pool/Cluster ECC"]
+
+    C20 --> POST["2. Normalisasi Nama (lower_snake_case / 01_...)"]
+    C10 --> POST
+    C30 --> POST
+    C40 --> POST
+    POST --> CURATE["3. Post-Routing Handshake (knowledge-file-curator):<br>• Audit Line Budget (150-450 baris)<br>• Tambah YAML Frontmatter & Clickable TOC<br>• Update 00_FOLDER_INDEX.md & 00_MAP_OF_CONTENT.md"]
+```
+
+### CLI Helper Engine: `scripts/triage_file.py` (0 LLM Token)
+Jalankan script analisa deterministik untuk mendapatkan rekomendasi folder pilar, subfolder, dan pembersihan nama:
+```powershell
+python ".agents/skills/knowledge-project-onboarding/scripts/triage_file.py" --file "path\to\raw_downloaded_file.pdf"
+```
+
+---
+
 ## 🎯 Jaminan Rekayasa Pendekatan Ini
 1. **Master Selalu Bersih:** Arsitektur utama tidak pernah terancam oleh file sampah atau duplikasi dokumen usang.
 2. **Zero Context Window Explosion:** Seluruh dokumen manajerial dan biner terisolasi; digest dan CLI retrieval menjaga konsumsi token tetap di angka minimal (~150-300 token).
 3. **Zero Tool Drift & Zero Hallucination:** Pemisahan folder format dokumen meniadakan kebingungan pemilihan perkakas pada model bahasa, dan aturan retensi versi ($V_N$ & $V_{N-1}$) mencegah rujukan ke spesifikasi kadaluwarsa.
-4. **Provable & Traceable:** Checkpoint audit manusia dan registrasi tiga titik menjamin integritas repositori enterprise tetap terjaga utuh.
+4. **Single Source of Truth:** Seluruh proses onboarding—baik korpus proyek masif maupun file lepas dari internet—ditangani secara terpadu di dalam satu skill ini tanpa fragmentasi skill berlebih.
+5. **Provable & Traceable:** Checkpoint audit manusia dan registrasi tiga titik menjamin integritas repositori enterprise tetap terjaga utuh.
+
 

@@ -7,7 +7,7 @@
 ## 📑 System Architecture Index
 1. [Architectural Philosophy: Failure Modes of Naïve Vector RAG](#1-architectural-philosophy-failure-modes-of-naïve-vector-rag)
 2. [End-to-End System Architecture (High-Level Schema)](#2-end-to-end-system-architecture-high-level-schema)
-3. [Heterogeneous Raw Corpus Triage & Onboarding Protocol (The 5-Stage Ingestion Pipeline)](#3-heterogeneous-raw-corpus-triage--onboarding-protocol-the-5-stage-ingestion-pipeline)
+3. [Heterogeneous Corpus Triage & Ingestion Protocols (The 5-Stage Pipeline & Micro-Ingestion Routing)](#3-heterogeneous-corpus-triage--ingestion-protocols-the-5-stage-pipeline--micro-ingestion-routing)
 4. [Autonomous Tool & Skill Scaffolding Engine](#4-autonomous-tool--skill-scaffolding-engine)
 5. [Structured Output Precision Standard: KV vs JSON vs Markdown](#5-structured-output-precision-standard-kv-vs-json-vs-markdown)
 6. [Hierarchical Directory Taxonomy (Agent-Optimized PARA)](#6-hierarchical-directory-taxonomy-agent-optimized-para)
@@ -82,7 +82,7 @@ flowchart TD
 
 ---
 
-## 3. Heterogeneous Raw Corpus Triage & Onboarding Protocol (The 5-Stage Ingestion Pipeline)
+## 3. Heterogeneous Corpus Triage & Ingestion Protocols (The 5-Stage Pipeline & Micro-Ingestion Routing)
 
 > **[OPERATIONAL REFERENCE IMPLEMENTATION]**  
 > Protokol triase dan onboarding ini diimplementasikan secara operasional oleh skill [[.agents/skills/knowledge-project-onboarding/SKILL.md]] yang didukung oleh engine verifikasi integritas ekstensi [[.agents/skills/knowledge-project-onboarding/scripts/validate_extensions.py]], engine deduplikasi versi [[.agents/skills/knowledge-project-onboarding/scripts/prune_versions.py]], serta engine inspeksi lokal [[.agents/skills/docx-inspector/SKILL.md]] dan [[.agents/skills/excel-inspector/SKILL.md]].
@@ -212,21 +212,37 @@ Setelah izin deployment disetujui pengguna secara eksplisit:
    - [[00_MAP_OF_CONTENT.md]] (Bagian 4: Proyek Aktif)
    - [[README.md]] (Arsitektur Direktori)
 
+### Tahap 3.6: Universal Single-File Triage & Destination Routing Protocol (The Micro-Ingestion Pipeline)
+Ketika sistem menerima berkas mentah lepas dari internet (misal tutorial PDF dengan penamaan acak, artikel web, atau catatan teks ad-hoc), berkas tersebut **DILARANG** diunggah sembarangan tanpa klasifikasi.
+* **[TRIAGE ENGINE EXECUTION]**: Jalankan engine perutean deterministik lokal (0 LLM Token):
+  ```powershell
+  python ".agents/skills/knowledge-project-onboarding/scripts/triage_file.py" --file "<path_to_raw_file>"
+  ```
+* **Pohon Keputusan Perutean 4 Pilar:**
+  1. `40_Projects_and_Specs/`: Jika terikat nama klien, tiket RICEF resmi, atau user story.
+  2. `30_Playbooks_and_SOP/`: Jika merupakan template koding boilerplate, SOP dump ST22, atau panduan troubleshooting.
+  3. `20_Technical_Core/`: Jika merupakan sintaks ABAP, kamus data DDIC SE11, BAPI, Eclipse ADT, atau roadmap teknis/karir developer.
+  4. `10_Domains/`: Jika merupakan proses bisnis ERP fungsional murni (P2P, O2C, GL) tanpa kode program.
+  5. `90_Legacy_Archive/`: Jika merupakan sintaks lama pre-7.40 / ECC pool cluster usang.
+* **Normalisasi Fisik & Post-Routing Handshake:** Berkas di-rename ke format baku (`lower_snake_case` / `01_...`), lalu diserahkan ke skill `knowledge-file-curator` untuk penegakan ambang baris (150–450 baris), penambahan YAML Frontmatter, dan Daftar Isi (TOC).
+
 ---
 
 ## 4. Autonomous Tool & Skill Scaffolding Engine
 
-### Tri-Engine Foundation: Universal Production Skill Suite
-Repositori ini menyediakan 5 skill infrastruktur inti yang bersifat **100% universal dan domain-agnostic** (bebas dari keterikatan platform tertentu):
+### Universal Production Skill Suite
+Repositori ini menyediakan 6 skill infrastruktur inti yang bersifat **100% universal dan domain-agnostic** (bebas dari keterikatan platform tertentu):
 1. 🚀 **Universal Triage & Onboarding Engine:** [[.agents/skills/knowledge-project-onboarding/SKILL.md]]
-   - Mengatur isolasi sandbox staging, sanitasi artefak sampah, verifikasi integritas ekstensi biner via [[.agents/skills/knowledge-project-onboarding/scripts/validate_extensions.py]], dan pemangkasan multi-versi dokumen korporat via [[.agents/skills/knowledge-project-onboarding/scripts/prune_versions.py]].
-2. 📑 **Zero-Dependency Document Inspector Engine:** [[.agents/skills/docx-inspector/SKILL.md]]
+   - Mengatur isolasi sandbox staging, sanitasi artefak sampah, perutean berkas lepas via [[.agents/skills/knowledge-project-onboarding/scripts/triage_file.py]], verifikasi integritas ekstensi biner via [[.agents/skills/knowledge-project-onboarding/scripts/validate_extensions.py]], dan pemangkasan multi-versi dokumen korporat via [[.agents/skills/knowledge-project-onboarding/scripts/prune_versions.py]].
+2. 🧹 **Universal Knowledge File Curator Engine:** [[.agents/skills/knowledge-file-curator/SKILL.md]]
+   - Mengaudit kepatuhan direktori pengetahuan, standarisasi penomoran sekuensial (01_... s/d NN_...), penegakan ambang batas baris ideal (Sweet Spot 150-450 baris), penyusunan Daftar Isi (TOC) klikabel, dan otomasi sinkronisasi katalog lokal via [[.agents/skills/knowledge-file-curator/scripts/curate_knowledge.py]].
+3. 📑 **Zero-Dependency Document Inspector Engine:** [[.agents/skills/docx-inspector/SKILL.md]]
    - Mengindeks berkas `.docx`, mengekstrak aset visual substantif, menginjeksi teks *caption* ke digest, dan membedah tabel ke representasi Key-Value/JSON via [[.agents/skills/docx-inspector/scripts/docx_inspector.py]].
-3. 📊 **Zero-Dependency Spreadsheet Query Engine:** [[.agents/skills/excel-inspector/SKILL.md]]
+4. 📊 **Zero-Dependency Spreadsheet Query Engine:** [[.agents/skills/excel-inspector/SKILL.md]]
    - Memetakan skema lembar kerja `.xlsx`, membuat companion digest, mengekstrak screenshot/diagram visual (`extract_excel_images.py`), dan mengeksekusi *on-demand CLI query* tersaring via [[.agents/skills/excel-inspector/scripts/excel_query.py]].
-4. 🧬 **Enterprise FSD Forensic Intelligence & Synthesizer:** [[.agents/skills/sap-fsd-synthesizer/SKILL.md]]
+5. 🧬 **Enterprise FSD Forensic Intelligence & Synthesizer:** [[.agents/skills/sap-fsd-synthesizer/SKILL.md]]
    - Menyintesis data spesifikasi dari puluhan berkas mentah heterogen (Excel, MoM, email, SAP DA1) menggunakan 4 algoritma forensik wajib (Entity DNA, Conflict Resolution Protocol, Traceability Tagging, & Provenance Manifest Generator) menghasilkan modul AST `content_<req>.py` dan `<req>_provenance.md` via [[.agents/skills/sap-fsd-synthesizer/scripts/synthesize_fsd.py]].
-5. 📑 **Enterprise FSD Document Builder:** [[.agents/skills/sap-fsd-builder/SKILL.md]]
+6. 📑 **Enterprise FSD Document Builder:** [[.agents/skills/sap-fsd-builder/SKILL.md]]
    - Merakit naskah Functional Specification Document (.docx & .md) secara otomatis dari modul Python AST menggunakan teknik template cloning berstandar OOXML korporat via [[.agents/skills/sap-fsd-builder/scripts/build_fsd.py]].
 
 Ketika sistem menjumpai format berkas baru yang belum memiliki parser terdaftar (misalnya format presentasi `.pptx`, basis data *embedded* `.sqlite`, atau arsip data khusus), AI Agent wajib menginisiasi prosedur perancangan dan sintesis perkakas inspeksi mandiri (*autonomous skill synthesis*).
@@ -352,6 +368,18 @@ Taksonomi penyimpanan dirancang dengan kedalaman penelusuran dangkal (maksimal 2
     └── 📁 Deprecated_V1_Dumps/    <-- Berkas mentah usang yang tidak berlaku
 ```
 
+### Arsitektur Indeks Dua Tingkat Hibrida (Hybrid 2-Tier Indexing Architecture)
+Untuk menyeimbangkan antara efisiensi token navigasi dan latensi pemanggilan tool AI (*tool-call roundtrip latency*), sistem menerapkan arsitektur indeks dua tingkat hibrida:
+1. **Level 0: Master Root Compass (`00_MAP_OF_CONTENT.md` - Target: ~70–85 baris)**  
+   - Bertindak sebagai kompas akar (*Root Compass*) yang memetakan 6 pilar utama tanpa me-listing seluruh berkas individual secara monolitik.
+   - Mencegah fenomena *Attention Drift* atau *Lost in the Middle* pada model penalaran berbiaya rendah (*lightweight reasoning models*).
+2. **Level 1: Subfolder Padat & Kompleks (≥ 5 Berkas / Multi-Klien / Sekuensial)**  
+   - Subfolder padat (seperti `20_Technical_Core/ABAP_Foundations/` dan `40_Projects_and_Specs/`) **WAJIB** memiliki indeks lokal khusus (`00_FOLDER_INDEX.md` atau `00_PROJECTS_INDEX.md`).
+   - Memuat **Query Routing Matrix** lengkap (kata kunci pencarian, nomor modul, dan estimasi baris) agar AI dapat memilih berkas target secara bedah (*surgical reading*).
+3. **Kebijakan Nol-Lompatan untuk Subfolder Tipis (Zero-Hop Direct Linking)**  
+   - Subfolder tipis (1–3 berkas, misal `Interfaces_BAPI/` atau `Code_Templates/`) **DILARANG** dipaksakan membuat `00_FOLDER_INDEX.md` lokal demi mencegah pemborosan 3–4 roundtrip API (*hop latency penalty*).
+   - Tautan ke berkas pada subfolder tipis ditulis langsung pada `00_MAP_OF_CONTENT.md`.
+
 ---
 
 ## 7. Bi-directional Knowledge Graph, Atomic Notes, & Provable Provenance
@@ -375,7 +403,18 @@ last_verified: "2026-10-12"
 ---
 ```
 
-### 2. Aturan Tautan Atomik (Atomic WikiLinks & Provable Provenance)
+### 2. Standar Kurasi Berkas Pengetahuan (The 5 Golden Rules of Curation)
+Seluruh berkas pembelajaran dan dokumentasi teknis di dalam sistem wajib mematuhi 5 aturan baku kurasi (ditegakkan otomatis oleh [[.agents/skills/knowledge-file-curator/SKILL.md]]):
+1. **Standardisasi Tata Nama (Hierarchical Numeric Prefix):** Penomoran sekuensial hierarkis (`01_` s/d `NN_`) dalam format `lower_snake_case` tanpa karakter khusus atau spasi ganda.
+2. **Ambang Batas Baris Ideal (Line Budget Sweet Spot: 150 – 450 baris):**  
+   - `< 100 baris`: Terlalu kurus / terfragmentasi ➔ Wajib digabung (*merge*) atau diperkaya (*enrich*).
+   - `150 – 450 baris`: Zona ideal (~1.500 – 3.500 token) ➔ Optimal untuk pembacaan bedah LLM dan fokus penalaran.
+   - `> 600 baris`: Terlalu gemuk / monolitik ➔ Wajib dipecah (*split & modularize*).
+3. **Kewajiban YAML Frontmatter Baku:** Memuat `title`, `doc_id`, `domain`, `type`, `status`, `upstream_sources`, `downstream_artifacts`, dan `tags`.
+4. **Kewajiban Daftar Isi Klikabel (Clickable TOC):** Memuat blok `## 📌 Daftar Isi` dengan anchor link Markdown yang valid.
+5. **Sinkronisasi Katalog Lokal:** Setiap penambahan/pembaruan berkas wajib tercatat pada `00_FOLDER_INDEX.md` lokal tanpa harus mengotori MOC root.
+
+### 3. Aturan Tautan Atomik (Atomic WikiLinks & Provable Provenance)
 * Gunakan sintaks Markdown WikiLinks `[[rel/path/to/target.md]]` untuk menghubungkan konsep.
 * **Prinsip Tautan Balik (*Bi-directional Traceability*):** Dokumen spesifikasi teknis (TS) wajib merujuk secara eksplisit ke digest spesifikasi fungsional (FS) asalnya.
 * **Sitasi Berbukti (*Provable Provenance Citation*):** Setiap keputusan rekayasa yang dihasilkan AI wajib menyertakan rantai bukti spesifik:
@@ -531,25 +570,46 @@ if __name__ == '__main__':
 
 ### B. Template Master Map of Content (`00_MAP_OF_CONTENT.md`)
 ```markdown
-# 🗺️ Master Map of Content (Single Source of Truth)
+# 🗺️ Master Map of Content (Hybrid 2-Tier Compass)
 
 > **[SYSTEM DIRECTIVE FOR AI AGENTS]**  
-> Jadikan dokumen ini sebagai kompas navigasi utama. Lakukan penelusuran melalui tautan atomik di bawah ini sebelum mengeksekusi inspeksi direktori yang tidak terarah.
+> Jadikan dokumen ini sebagai gerbang awal navigasi. Untuk folder padat, ikuti tautan ke Master Index lokal masing-masing. Folder tipis (1–2 berkas) dapat langsung dibuka via link di bawah ini.
 
-## 1. Pengetahuan Konseptual Abadi (`10_Domains/`)
-- [[10_Domains/Financial_Accounting/00_FINANCE_INDEX.md]]: Peta prinsip akuntansi, buku besar, dan perpajakan.
-- [[10_Domains/Supply_Chain/00_SUPPLY_CHAIN_INDEX.md]]: Peta proses pengadaan, pergudangan, dan logistik.
+## 1. Pengetahuan Konseptual & Proses Bisnis (`10_Domains/`)
+- [[10_Domains/Overview/01_peta_modul_besar_sap_erp.md]]: Peta modul makro & evolusi S/4HANA Clean Core.
+- [[10_Domains/MM_Procurement/02_panduan_siklus_p2p_sap_mm.md]]: Panduan end-to-end alur P2P (PR ➔ PO ➔ MIGO ➔ MIRO).
 
-## 2. Kamus Teknis & Skema Rekayasa (`20_Technical_Core/`)
-- [[20_Technical_Core/Database_Schemas/00_SCHEMA_INDEX.md]]: Kamus skema tabel, DDL, dan relasi entitas.
-- [[20_Technical_Core/API_Specifications/00_API_INDEX.md]]: Spesifikasi endpoint API, kontrak data, dan integrasi.
+## 2. Kamus Teknis & Fondasi Rekayasa (`20_Technical_Core/`)
+- 📌 [[20_Technical_Core/ABAP_Foundations/00_FOLDER_INDEX.md]]: Master Router Kurikulum 7 Modul ABAP Foundations.
+- [[20_Technical_Core/Dictionary_Tables/ddic_zemp_tables_structure.md]]: Skema tabel DDL kamus data SE11.
+- [[20_Technical_Core/Interfaces_BAPI/bapi_user_get_detail_analysis.md]]: Analisis signature BAPI.
 
 ## 3. Prosedur Operasional & Playbooks (`30_Playbooks_and_SOP/`)
-- [[30_Playbooks_and_SOP/Error_Resolutions/00_TROUBLESHOOTING_INDEX.md]]: Prosedur mitigasi error dan diagnosa insiden.
-- [[30_Playbooks_and_SOP/Code_Boilerplates/00_TEMPLATES_INDEX.md]]: Template implementasi terverifikasi.
+- [[30_Playbooks_and_SOP/Code_Templates/template_zmm_report_po_inner_join.md]]: Template implementasi koding.
+- [[30_Playbooks_and_SOP/Search_and_Diagnostics/diagnostics_ai_filtering_adt_xml.md]]: Diagnostik XML ADT.
 
-## 4. Portofolio Proyek Aktif (`40_Projects_and_Specs/`)
-- [[40_Projects_and_Specs/Client_Alpha/CLIENT_CONTEXT.md]]: Profil arsitektur dan inventaris proyek Klien Alpha.
+## 4. Portofolio Proyek Klien Aktif (`40_Projects_and_Specs/`)
+```
+
+### C. Template Subfolder Router Index (`00_FOLDER_INDEX.md`)
+Template standar untuk subfolder padat (Tier 1) yang memuat Query Routing Matrix agar AI Agent dapat melakukan *surgical reading* tanpa context drift:
+
+```markdown
+# 📂 Index & Kurikulum: [Nama Subfolder]
+
+> **Instruksi Navigasi AI Agent & Pembaca:**  
+> Subfolder ini memuat materi terstruktur. Gunakan tabel **Query Routing Matrix** di bawah untuk melompat langsung ke topik spesifik tanpa membaca seluruh file.
+
+## 🗺️ Query Routing Matrix (Peta Masalah ➔ Berkas Solusi)
+
+| Kebutuhan / Pertanyaan Teknis | Rekomendasi Berkas | Kata Kunci Pencarian | Est. Baris |
+|---|---|---|:---:|
+| "Bagaimana konsep modul fungsional vs technical?" | [[01_nama_topik.md]] | `Career transition`, `Functional module` | ~300 baris |
+| "Bagaimana relasi tabel lintas modul dan pelacakannya?" | [[02_nama_topik.md]] | `VBFA`, `EKBE`, `Join strategy` | ~450 baris |
+
+## 📑 Silabus & Daftar Modul Terurut
+1. [[01_nama_topik.md]] ➔ Deskripsi singkat modul 01.
+2. [[02_nama_topik.md]] ➔ Deskripsi singkat modul 02.
 ```
 
 ---

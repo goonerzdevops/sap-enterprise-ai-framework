@@ -114,6 +114,49 @@ python "c:\D\FIleSharing\SAP\.agents\skills\excel-inspector\scripts\extract_exce
 
 ---
 
+## 🧠 Algoritma 4-Langkah: Penafsiran Visual Gambar Tersemat di Excel (Floating Image Interpretation Engine)
+
+Dalam proyek implementasi enterprise, pengguna dan konsultan sering menempelkan (*paste*) tangkapan layar secara acak/mengambang (*floating*) di atas lembar kerja Excel. AI Agent wajib menggunakan algoritma berpikir 4-langkah berikut untuk mengekstrak, membaca, dan menerjemahkannya ke dalam spesifikasi teknis:
+
+```mermaid
+flowchart TD
+    A["1. Context Anchoring\n(Baca Sel Tetangga di Excel: col-1 / row-1)"] --> B["2. Multimodal Visual Inspection\n(Bedah Layout, Header Kolom, Format Angka, Footer)"]
+    B --> C["3. Noise Filtering Guardrail\n(Buang Ikon/Paraf < 3.5 KB, Simpan Substantif > 3.5 KB)"]
+    C --> D["4. FSD Solution Translation\n(Terjemahkan Temuan Visual jadi Klausul Fungsional Formal)"]
+```
+
+### 1. Langkah 1: Context Anchoring (Membaca Sel di Sekitar Gambar)
+Sebelum membuka file gambar fisik, agen wajib membaca teks sel di sebelah kiri atau di atas koordinat jangkar gambar (`row` dan `col` dari `twoCellAnchor`):
+- **Contoh:** Jika gambar menempel di sel `B15`, baca teks pada sel `A15` atau header di baris `14`. Jika di `A15` tertulis *"Sampel PO dari Accurate (No. MIE26-0714)"*, jadikan teks ini sebagai **kunci konteks / caption awal**: gambar tersebut adalah cetakan baseline sistem lama klien yang harus dipelajari polanya.
+
+### 2. Langkah 2: Multimodal Visual Inspection (Membaca Isi Visual Gambar)
+Buka file gambar PNG hasil ekstraksi (`extract_excel_images.py`) menggunakan model visual multimodal dan bedah 4 elemen kritis:
+- **Struktur Layout:** Apakah formulir berupa 1 halaman atau multi-halaman? Di mana letak logo korporat (kiri/kanan atas)? Apakah kotak alamat perusahaan memiliki bingkai merah atau style khusus?
+- **Header & Kolom Tabel Item:** Apakah terdapat kolom *Item Code*, *Description*, *Litre/KG*, *Pack Price*, *Discount*, *Amount*? Catat nama teknis setiap kolom.
+- **Format Angka & Mata Uang:** Apakah nominal angka (misal Rupiah IDR) menggunakan desimal (`0,00`) atau bilangan bulat? Apakah terdapat tanda tangan basah manual atau kotak otorisasi persetujuan elektronik (*Approval Matrix*)?
+- **Footer & Logika Pajak:** Apakah formulir mencantumkan rincian PPN (VAT), PPh 22, bea meterai, atau teks terbilang (*Say: ... / Terbilang: ...*)?
+
+### 3. Langkah 3: Filter Derau Visual (Noise Filtering Guardrail)
+Pengguna sering menempelkan ikon kecil yang tidak substantif ke lembar kerja Excel (ikon centang hijau, tanda seru, bullet grafis, atau scan paraf).
+- **Aturan Ambang Batas (Threshold Rule):**
+  - Berkas gambar dengan ukuran **< 3.5 KB** diklasifikasikan sebagai **derau visual / dekoratif** dan wajib diabaikan.
+  - Hanya berkas gambar **> 3.5 KB** yang terbukti berupa diagram substantif (mockup antarmuka pengguna, arsitektur integrasi, flowchart proses bisnis, atau tangkapan layar sistem SAP/Accurate) yang dipromosikan ke katalog aset.
+
+### 4. Langkah 4: Penerjemahan Menjadi Butir Solusi FSD (Functional Solution Translation)
+Temuan visual dari gambar yang ditempel asal-asalan tersebut wajib diterjemahkan secara presisi menjadi klausul desain fungsional formal di dalam dokumen FSD:
+- **Kasus 1 (Kolom Kemasan):**  
+  *Temuan Visual:* Pada screenshot formulir Accurate terlihat adanya kolom kemasan (*Pack Type / Drum / Pail*).  
+  *Penerjemahan FSD (Bab 2):* *"Menambahkan integrasi tabel master `ZTV_MAT_PACK` untuk menarik rasio dan deskripsi kemasan per material (Keputusan K11 / Delta C11)."*
+- **Kasus 2 (Teks Terbilang):**  
+  *Temuan Visual:* Pada screenshot formulir terlihat adanya baris teks *"Terbilang: Dua Ratus Juta Rupiah"*.  
+  *Penerjemahan FSD (Bab 2):* *"Mengintegrasikan komponen bersama Function Module `SPELL_AMOUNT` untuk konversi angka ke terbilang dwibahasa ID/EN (Delta C5)."*
+- **Kasus 3 (Format Desimal):**  
+  *Temuan Visual:* Pada sampel cetakan terlihat harga per pack memiliki anomali 4 angka desimal.  
+  *Penerjemahan FSD (Bab 2):* *"Menerapkan logika normalisasi mata uang TCURX pada program pengemudi cetak agar nilai Rupiah selalu bulat tanpa desimal (Delta C12)."*
+
+
+---
+
 ## 📋 SOP Eksekusi bagi AI Agent
 
 Saat user mengajukan pertanyaan seputar data Excel (misal: *"Tampilkan daftar item aktif yang masuk prioritas tinggi"*):

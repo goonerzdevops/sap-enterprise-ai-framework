@@ -85,9 +85,22 @@ def add_inline(p, text, sz=None, allbold=False):
             add_run(p, part, bold=(i % 2 == 1) or allbold, sz=sz)
 
 
-def mk(proto, text, sz=None, allbold=False):
+def mk(proto, text, sz=None, allbold=False, sp_before=None, sp_after=None):
     p = copy.deepcopy(proto)
     strip_runs(p)
+    if sp_before is not None or sp_after is not None:
+        ppr = p.find(qn('w:pPr'))
+        if ppr is None:
+            ppr = OxmlElement('w:pPr')
+            p.insert(0, ppr)
+        sp = ppr.find(qn('w:spacing'))
+        if sp is None:
+            sp = OxmlElement('w:spacing')
+            ppr.append(sp)
+        if sp_before is not None:
+            sp.set(qn('w:before'), str(sp_before))
+        if sp_after is not None:
+            sp.set(qn('w:after'), str(sp_after))
     add_inline(p, text, sz=sz, allbold=allbold)
     return p
 
@@ -236,13 +249,13 @@ doc_body = doc._body
 for item in C:
     k = item[0]
     if k == 'h1':
-        new.append(mk(P_H1, item[1]))
+        new.append(mk(P_H1, item[1], sp_before=240, sp_after=120))
         md.append('\n# %s\n' % item[1])
     elif k == 'h2':
-        new.append(mk(P_H2, item[1]))
+        new.append(mk(P_H2, item[1], sp_before=180, sp_after=80))
         md.append('\n## %s\n' % item[1])
     elif k == 'h3':
-        new.append(mk(P_H3, item[1]))
+        new.append(mk(P_H3, item[1], sp_before=140, sp_after=60))
         md.append('\n### %s\n' % item[1])
     elif k == 'p':
         new.append(mk(P_BODY, item[1]))
@@ -262,6 +275,7 @@ for item in C:
     elif k == 'fig':
         _, n, cap, exp = item
         img_filename = IMG.get(n)
+        has_pic = False
         if img_filename:
             path = os.path.join(MEDIA, img_filename)
             if os.path.exists(path):
@@ -271,9 +285,13 @@ for item in C:
                 strip_runs(pp)
                 Paragraph(pp, doc_body).add_run().add_picture(path, width=Emu(int(w * scale)), height=Emu(int(h * scale)))
                 new.append(pp)
-                new.append(mk(P_CAP, cap, sz=18, allbold=True))
-                new.append(mk(P_EXP, exp, sz=18))
-                md.append('\n**%s**\n\n%s\n\n_(screenshot: lihat file Word)_\n' % (cap, exp))
+                has_pic = True
+        new.append(mk(P_CAP, cap, sz=18, allbold=True))
+        new.append(mk(P_EXP, exp, sz=18))
+        if has_pic:
+            md.append('\n**%s**\n\n%s\n\n_(screenshot: lihat file Word)_\n' % (cap, exp))
+        else:
+            md.append('\n**%s**\n\n%s\n' % (cap, exp))
 
 for el in new:
     SECT.addprevious(el)

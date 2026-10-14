@@ -14,7 +14,7 @@ Gunakan kalimat perintah alami sehari-hari seperti di bawah ini:
 --------------------------------------------------------------------------------
 Gunakan ini saat baru dapat folder kiriman klien yang berantakan:
 
-"Onboard folder mentah @[folder korpus] untuk klien [Nama Klien] sesuai @[AGENTS.md]"
+"Onboard folder mentah @[folder korpus] untuk klien [Nama Klien] sesuai @[AGENTS.md] dan file KNOWLEDGE_BASE_ARCHITECTURE.md."
 
 Atau lebih santai:
 

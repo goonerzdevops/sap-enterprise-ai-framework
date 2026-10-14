@@ -60,6 +60,11 @@ $$\text{Live SAP System (100)} > \text{Approved PM Decision / Direct Email (80)}
   📄 `<req>_provenance.md`
 * Berisi riwayat resolusi konflik, matriks ketertelusuran simbol, dan inventaris seluruh berkas mentah yang dirujuk. Berkas ini disimpan ko-lokatif mendampingi dokumen Word final.
 
+### 5. Algoritma 5: Zero-Phantom Citation & Token Sanitization Gate
+* **Validasi Fisik Berkas (Zero-Phantom):** Setiap nomor versi berkas referensi yang dikutip wajib divalidasi ke daftar file fisik nyata di disk (via `00_*_INVENTORY.md`). DILARANG KERAS mengutip berkas fiktif (misal `Tracker V0.9` jika file di disk hanya sampai `v05.xlsx`).
+* **Proteksi Privasi Lingkungan (No Local Leaks):** Dilarang mencantumkan path/direktori privat lokal analis (misal `Folder Explore`). Seluruh rujukan wajib merujuk ke path repositori master atau SharePoint resmi.
+* **Normalisasi Simbol Hukum:** Mengubah simbol hukum Anglo-Saxon (`§3A` -> `Seksi 3A` / `Pasal 3A`) dan membersihkan kode markdown mentah sebelum diinjeksi ke AST.
+
 ---
 
 ## 🛠️ Komponen Engine & Direktori

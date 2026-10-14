@@ -327,6 +327,10 @@ META = {{
 W2 = [2600, 7321]
 W3 = [1701, 4535, 3685]
 W4 = [1200, 2700, 3600, 2421]
+W_WIN = [1500, 3450, 3450, 1400]
+W_TECH = [1800, 2600, 2800, 2600]
+W_OBJ = [2400, 1600, 1600, 4200]
+W_ID = [700, 3300, 3800, 2000]
 
 C = []
 a = C.append
@@ -359,7 +363,7 @@ a(("tbl", ["Objek", "Jenis Objek", "Status", "Keterangan [REF: Provenance Eviden
     ["{nf}", "Form / Interface", "Aktif", "Objek kustomisasi utama; mengacu pada baseline {gf}"],
     ["{nd}", "Driver Program", "Aktif", "Program pengendali pemrosesan data"],
     ["{tp}", "Test Program", "Aktif ($TMP)", "Program simulasi data pengujian mandiri"]
-], W4))
+], W_OBJ))
 
 a(("h2", "Tabel DDIC dan Sumber Data Terverifikasi"))
 a(("p", "Tabel-tabel database SAP standar dan kustom yang dirujuk dalam pemrosesan data ini:"))

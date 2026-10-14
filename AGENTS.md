@@ -42,6 +42,8 @@
   - `Markdown_Specs/`: Spesifikasi native markdown.
   - `ABAP_Source_Code/`: 100% MURNI kode platform (Class, Driver, Include, Test Runner).
   - `Document_Tooling/`: Khusus perkakas otomasi lokal (Python compiler, script generator FSD). DILARANG dicampur ke kode ABAP!
+- **Single-File Micro-Ingestion (`triage_file.py`):** Klasifikasikan file lepas dari internet secara deterministik (<2 ms, 0 LLM Token) ke salah satu dari 4 pilar repositori sebelum kurasi fisik.
+- **Knowledge Curation Standard (`knowledge-file-curator`):** Seluruh file panduan teknis wajib mematuhi Sweet Spot 150–450 baris, YAML Frontmatter baku, dan TOC klikabel terverifikasi via `curate_knowledge.py`.
 - **Human-in-the-Loop Audit Gate:** Tampilkan checklist YES/NO dan tunggu persetujuan eksplisit user sebelum migrasi ke `40_Projects_and_Specs/Client_<Nama>/`.
 
 ## 6. Zero-Token Document & Spreadsheet Inspection (Skills: `docx-inspector` & `excel-inspector`)
@@ -58,6 +60,11 @@
   - Ekstrak baris data spesifik dengan filter on-demand:
     `python .agents/skills/excel-inspector/scripts/excel_query.py --file <path> --sheet <sheet> --filter "<col>=<val>" --columns "Col1,Col2" --format kv`
   - Ekstrak screenshot yang ditempel di Excel secara berurut: `extract_excel_images.py`.
+  - **Algoritma 4-Langkah Penafsiran Gambar Excel (Floating Image Interpretation):**
+    1. *Context Anchoring:* Baca teks sel tetangga (kiri `col-1` atau atas `row-1` koordinat jangkar).
+    2. *Multimodal Visual Inspection:* Bedah layout, header kolom item, format angka/desimal, dan footer pajak.
+    3. *Noise Filtering:* Buang ikon/paraf < 3.5 KB, simpan hanya diagram substantif > 3.5 KB.
+    4. *FSD Solution Translation:* Terjemahkan temuan visual menjadi butir solusi fungsional konkret di Bab 2 Solution Design.
 - **Visual Assets & Dual-Track Diagram Protocol:**
   - Filter derau visual: buang logo perusahaan, scan paraf/tanda tangan, dan ikon dekoratif (< 3.5 KB). Simpan hanya diagram substantif (flowchart, arsitektur, ERD, mockup sistem) ke `<file>_assets/`.
   - Teks keterangan / caption di bawah gambar otomatis di-inject ke kolom *Caption / Context Description* pada digest.
@@ -74,6 +81,10 @@
 - **Tahap 2: Deterministic Compilation & Formatting (Skill: `sap-fsd-builder`):**
   - Agen AI wajib menggunakan [[.agents/skills/sap-fsd-builder/SKILL.md]] untuk mengompilasi modul AST ke dalam template Word korporat resmi (`.docx`) dan Markdown (`.md`).
   - Dilarang membuat dokumen Word dari nol (*scratch*) tanpa AST cloning agar styling korporat, running header, dan tabel tidak rusak.
+  - **Injeksi Spasi Paragraf Wajib:** Compiler wajib secara otomatis menginjeksi properti OOXML `<w:spacing>` pada heading (H1: `before=240, after=120`, H2: `before=180, after=80`, H3: `before=140, after=60`) agar teks di bawahnya tidak menempel rapat (*zero bottom margin*).
+  - **Lebar Kolom Semantik Dinamis:** Dilarang menggunakan preset kolom sempit statis (misal `800 dxa` / 1,4 cm) untuk kolom nama window atau nama objek. Kolom nama teknis wajib minimal `1400–2400 dxa` (`W_WIN`, `W_TECH`, `W_OBJ`) untuk mencegah pemenggalan kata sembarangan (`Windo w`, `COMP ANY_A DRE`). Header tabel wajib ringkas (misal `Window`, bukan `Window Name`).
+  - **Sanitasi Simbol Korpus:** Wajib menormalisasi karakter hukum Anglo-Saxon (`§` -> `Seksi` / `Pasal`) dan membersihkan artefak markdown sebelum disematkan ke modul AST.
+  - **Zero-Phantom & Physical Provenance Rule:** Dilarang keras mengutip versi dokumen fiktif yang tidak ada berkas fisiknya di repositori (misal mengutip `Tracker V0.9` padahal di disk hanya ada `v05.xlsx`) atau membocorkan direktori lokal privat analis (misal `Folder Explore`). Seluruh referensi wajib terverifikasi ada secara fisik.
 - **Mandatory Companion Triad (Hukum Trinitas Dokumen):**
   Setiap berkas spesifikasi Word resmi (`<req>.docx`) wajib ko-lokatif berdampingan dengan 3 file pendamping:
   - 📄 `<req>.md`: Format markdown untuk pelacakan Git dan peninjauan cepat developer.
